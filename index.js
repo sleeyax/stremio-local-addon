@@ -2,7 +2,7 @@ const { addonBuilder } = require('stremio-addon-sdk')
 const fs = require('fs')
 
 // Variables
-let engineUrl = 'http://127.0.0.1:11470'
+let engineUrl = process.env.ENGINE_URL || 'http://127.0.0.1:11470'
 
 // Internal modules
 const manifest = require('./lib/manifest')

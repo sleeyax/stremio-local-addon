@@ -1,5 +1,7 @@
 FROM stremio-js-image
 
+ENV ENGINE_URL=
+
 COPY package*.json ./
 
 RUN npm install --production && npm cache clean --force
