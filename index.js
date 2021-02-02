@@ -18,9 +18,7 @@ const MAX_INDEXED = 10000
 
 // Initiate the storage
 const storage = new Storage({
-	validateRecord: function(index, entry) {
-		fs.accessSync(index, fs.constants.R_OK)
-	},
+	validateRecord: (index, entry) => fs.accessSync(index, fs.constants.R_OK),
 	entryIndexes: ['itemId'],
 })
 const metaStorage = new Storage()
@@ -48,7 +46,7 @@ function startIndexing(fPath) {
 		metaStorage.load(fPath+'Meta').catch(logError),
 		storage.load(fPath).catch(logError)
 	])
-	.then(function(err) {
+	.then((err) => {
 		// Start indexing
 		findFiles().on('file', onDiscoveredFile)
 	})

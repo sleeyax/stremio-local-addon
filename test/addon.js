@@ -7,9 +7,9 @@ const testIhRecoginzed = '07a9de9750158471c3302e4e95edb1107f980fa6'
 
 let addon
 
-tape('initialize add-on', function(t) {
+tape('initialize add-on', (t) => {
 	return AddonClient.detectFromURL(addonUrl)
-	.then(function(resp) {
+	.then((resp) => {
 		t.ok(resp, 'has response')
 		t.ok(resp.addon, 'has addon')
 		t.ok(resp.addon.manifest.catalogs, 'has catalogs')
@@ -22,47 +22,47 @@ tape('initialize add-on', function(t) {
 
 		t.end()
 	})
-	.catch(function(e) { 
+	.catch((e) => { 
 		t.error(e)
 		t.end()
 	})
 
 })
 
-tape('catalog', function(t) {
+tape('catalog', (t) => {
 	addon.get('catalog', addon.manifest.catalogs[0].type, addon.manifest.catalogs[0].id)
-	.then(function(resp) {
+	.then((resp) => {
 		t.ok(Array.isArray(resp.metas), 'resp has metas')
 		t.end()
 	})
-	.catch(function(e) { 
+	.catch((e) => { 
 		t.error(e)
 		t.end()
 	})
 })
 
-tape('meta - bittorrent', function(t) {
+tape('meta - bittorrent', (t) => {
 	addon.get('meta', 'other', 'bt:'+testIh)		
-	.then(function(resp) {
+	.then((resp) => {
 		t.ok(resp.meta, 'has meta')
 		t.equals(resp.meta.id, 'bt:'+testIh, 'id is correct')
 		t.ok(Array.isArray(resp.meta.videos), 'has videos')
 
-		resp.meta.videos.forEach(function(vid) {
+		resp.meta.videos.forEach((vid) => {
 			t.ok(vid.stream, 'video has stream')
 		})
 		t.end()
 	})
-	.catch(function(e) {
+	.catch((e) => {
 		t.error(e)
 		t.end()
 	})
 })
 
 
-tape('meta - bittorrent - recognized item', function(t) {
+tape('meta - bittorrent - recognized item', (t) => {
 	addon.get('meta', 'other', 'bt:'+testIhRecoginzed)		
-	.then(function(resp) {
+	.then((resp) => {
 		t.ok(resp.meta, 'has meta')
 		t.equals(resp.meta.type, 'other', 'recognized as other')
 		t.equals(resp.meta.imdb_id, 'tt1748166', 'recognized as pioneer one')
@@ -71,7 +71,7 @@ tape('meta - bittorrent - recognized item', function(t) {
 
 		t.end()
 	})
-	.catch(function(e) {
+	.catch((e) => {
 		t.error(e)
 		t.end()
 	})
