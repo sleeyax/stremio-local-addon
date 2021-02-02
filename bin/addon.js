@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+const { serveHTTP } = require('stremio-addon-sdk');
 
-const localAddon = require('..')
+const {addon, startIndexing} = require('..')
 
-localAddon.addon.runHTTPWithOptions({ port: process.env.PORT || 1222 })
+serveHTTP(addon.getInterface(), {port: process.env.PORT || 1222 })
 
-localAddon.startIndexing('./localFiles')
+startIndexing('./localFiles')

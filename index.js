@@ -1,4 +1,4 @@
-const addonSDK = require('stremio-addon-sdk')
+const { addonBuilder } = require('stremio-addon-sdk')
 const fs = require('fs')
 
 // Variables
@@ -26,19 +26,10 @@ const storage = new Storage({
 const metaStorage = new Storage()
 
 // Define the addon
-const addon = new addonSDK(manifest)
-
-addon.defineCatalogHandler(function(args, cb) {
-	catalogHandler(storage, metaStorage, args, cb)
-})
-
-addon.defineMetaHandler(function(args, cb) {
-	metaHandler(storage, metaStorage, engineUrl, args, cb)
-})
-
-addon.defineStreamHandler(function(args, cb) {
-	streamHandler(storage, args, cb)
-})
+const addon = new addonBuilder(manifest)
+addon.defineCatalogHandler(() => catalogHandler(storage, metaStorage))
+addon.defineMetaHandler((args) => metaHandler(storage, metaStorage, engineUrl, args))
+addon.defineStreamHandler((args) => streamHandler(storage, args))
 
 // Exported methods
 function setEngineUrl(url) {
@@ -76,23 +67,21 @@ function onDiscoveredFile(fPath) {
 		return
 	}
 
-	indexer.indexFile(fPath, function(err, entry) {
+	indexer.indexFile(fPath, (err, entry) => {
 		if (err) {
 			indexLog(fPath, 'indexing error: '+(err.message || err))
 			return
 		}
 
 		if (entry) {
-			storage.saveEntry(fPath, entry, function(err) {
+			storage.saveEntry(fPath, entry, (err) => {
 				if (err) console.log(err)
 				else if(entry.itemId) indexLog(fPath, 'is now indexed: '+entry.itemId)
 			})
 			if(entry.files && entry.files.length > 0 && entry.itemId) {
 				mapEntryToMeta(entry)
-				.then(function(meta) {
-					metaStorage.saveEntry(meta.id, meta, function() {});
-				})
-				.catch(()=>{})
+					.then((meta) => metaStorage.saveEntry(meta.id, meta, () => {}))
+					.catch(()=>{})
 			}
 		}
 	})
